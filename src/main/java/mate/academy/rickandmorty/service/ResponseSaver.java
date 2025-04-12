@@ -3,8 +3,6 @@ package mate.academy.rickandmorty.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.rickandmorty.dto.external.CharacterModelDto;
-import mate.academy.rickandmorty.dto.external.LocationDto;
-import mate.academy.rickandmorty.dto.external.OriginDto;
 import mate.academy.rickandmorty.dto.external.RickAndMortyResponseDto;
 import mate.academy.rickandmorty.mapper.CharacterMapper;
 import mate.academy.rickandmorty.repository.RickAndMortyRepository;
@@ -23,23 +21,10 @@ public class ResponseSaver {
             RickAndMortyResponseDto responseDto = rickAndMortyApiClient.getResponse(currentPage);
             List<CharacterModelDto> characterInfo = responseDto.getCharactersInfo();
             characterInfo.stream()
-                    .map(this::mapCharacterInfo)
                     .map(characterMapper::toModel)
                     .forEach(rickAndMortyRepository::save);
             currentPage = responseDto.getInfo().getNext();
         } while (currentPage != null);
         System.out.println("DB is saved.");
-    }
-
-    private CharacterModelDto mapCharacterInfo(CharacterModelDto e) {
-        LocationDto locationDto = e.getLocation() != null
-                ? new LocationDto(e.getLocation().name(), e.getLocation().url())
-                : null;
-        OriginDto originDto = e.getOrigin() != null
-                ? new OriginDto(e.getOrigin().name(), e.getOrigin().url())
-                : null;
-        e.setLocation(locationDto);
-        e.setOrigin(originDto);
-        return e;
     }
 }

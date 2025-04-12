@@ -19,7 +19,7 @@ public class RickAndMortyServiceImpl implements RickAndMortyService {
     @Override
     public CharacterShortInfoDto getRandomCharacter() {
         Random random = new Random();
-        long randomId = random.nextLong(1, 827);
+        long randomId = random.nextLong(1, rickAndMortyRepository.count() + 1);
         Optional<CharacterModel> byId = rickAndMortyRepository.findById(randomId);
         CharacterModel characterModel = byId.orElseThrow(
                 () -> new RuntimeException("No such element with id " + randomId));
